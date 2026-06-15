@@ -1,0 +1,10 @@
+# YOLO26 車輛偵測資料集設定
+# 由 prepare_dataset_yolo26.py 自動產生
+
+path: C:/Users/andy8/Desktop/NTUT_Media/Project4/dataset_yolo26
+train: train/images
+val: valid/images
+test: test/images
+
+names:
+  0: Car
