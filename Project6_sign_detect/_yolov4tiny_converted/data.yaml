@@ -1,0 +1,8 @@
+train: C:\Users\andy8\Desktop\NTUT_Media\Project6\_yolov4tiny_converted\images\train
+val: C:\Users\andy8\Desktop\NTUT_Media\Project6\_yolov4tiny_converted\images\train
+nc: 4
+names:
+- blocked
+- pedestrian
+- rail
+- stop

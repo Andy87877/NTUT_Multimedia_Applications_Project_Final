@@ -1,0 +1,4 @@
+blocked
+pedestrian
+rail
+stop
