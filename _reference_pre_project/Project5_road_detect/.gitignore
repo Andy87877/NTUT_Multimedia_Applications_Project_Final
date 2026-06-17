@@ -1,0 +1,10 @@
+*.txt
+extract_pdf.py
+test_code.py
+format_code.py
+format_md.py
+
+個人報告.md
+小組報告.md
+
+/_record_video/merge.mov

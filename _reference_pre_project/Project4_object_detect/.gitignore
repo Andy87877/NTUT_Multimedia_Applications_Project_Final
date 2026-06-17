@@ -1,0 +1,34 @@
+# Large video files (exceed GitHub 100MB limit)
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Large model weight files (exceed GitHub 100MB limit)
+*.pth
+*.pt
+*.weights
+*.conv.*
+weights/
+backup/
+runs_yolo26/car_detect/weights/
+
+# Zip archives
+*.zip
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+_project_report.md
+小組報告.md

@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 4
+names: ['blocked', 'pedestrian', 'rail', 'stop']
+
+roboflow:
+  workspace: s-workspace-nlg6l
+  project: s-workspace-nlg6l
+  version: dataset
+  license: Private
+  url: https://app.roboflow.com/s-workspace-nlg6l/s-workspace-nlg6l/dataset

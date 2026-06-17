@@ -1,0 +1,13 @@
+# YOLO26 合併車輛偵測資料集設定
+# 合併自:
+#   113820020_林政德.yolo26 (前綴: 20_)
+#   113820033_謝奕宏.yolo26 (前綴: 33_)
+
+path: C:/Users/andy8/Desktop/NTUT_Media/Project4/dataset_merged_yolo26
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 1
+names:
+  0: Car
