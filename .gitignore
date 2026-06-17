@@ -1,1 +1,29 @@
+# Python 暫存
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# 影像與數據集 (排除數千張圖片)
+**/dataset*/
+**/_SignDetection.*/
+**/obj/
+**/.113820020_*/
+**/.113820033_*/
+**/.project4_yolo_v3.*/
+
+# 影片檔
+*.mp4
+*.avi
+
+# 大型模型與權重檔
+*.pth
+*.pt
+*.weights
+*.engine
+*.onnx
+*.conv.29
+**/backup/
+**/runs/
+
+# 原本忽略的檔案
 小組報告.md
