@@ -1,0 +1,16 @@
+JETBOT DEPLOYMENT PACKAGE
+
+Target directory: ~/trt_yolov4-tiny-master/
+
+1. Copy the CONTENTS of this folder into the existing trt_yolov4-tiny-master directory.
+   Keep the existing utils/ directory and yolo conversion scripts on the JetBot.
+2. Open Final.ipynb from the trt_yolov4-tiny-master root directory.
+3. Run Cell 2 once. It builds:
+   - road_following_model/best_steering_model_xy_trt.pth
+   - yolo/yolov4-tiny-416.trt or yolo/yolov4-tiny-416.engine
+4. Restart the Jupyter kernel after conversion to release GPU memory.
+5. Run Unit 3 cells C1 through C6 in order.
+6. Run C7 to stop the robot and release the camera.
+
+Before driving, start with Speed between 0.10 and 0.15.
+TensorRT files must be built on the target JetBot and cannot be prebuilt on Windows.
