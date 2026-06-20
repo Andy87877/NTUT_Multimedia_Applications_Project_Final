@@ -3,7 +3,9 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-_reference_pre_project/**
+_reference_pre_project/
+_reference_pre_report/
+Markdown_to_Docx_to_Pdf/
 
 
 # my self
