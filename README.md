@@ -33,7 +33,7 @@
 
 ```
 Final/
-├── Final.ipynb                   # 🚀 主部署 Jupyter Notebook (包含分單元測試與最終合併版)
+├── Final_team_1.ipynb            # 🚀 主部署 Jupyter Notebook (包含分單元測試與最終合併版)
 ├── 使用說明.md                   # 📝 車端部署、模型轉換與滑桿調參詳細說明書
 ├── 小組報告.md                   # 📊 期末小組書面報告草稿 (符合大綱要求)
 ├── Final_Project.pdf             # 📕 期末專案規範官方 PDF
@@ -45,11 +45,11 @@ Final/
 ```
 
 ### 📍 核心檔案說明：
-* **[Final.ipynb](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/Final.ipynb)**: **控制核心**。內含三個單元：
+* **[Final_team_1.ipynb](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/Final_team_1.ipynb)**: **控制核心**。內含三個單元：
   * **單元一**：純道路跟隨（僅載入 ResNet 進行 PID 與轉向調校，不載入 YOLO）。
   * **單元二**：純交通號誌動作測試（僅載入 YOLO 直線前進測試停/走動作）。
   * **單元三**：最終雙模型合併版（雙模型並行推論，完整賽道自駕）。
-* **[使用說明.md](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/%E4%BD%BF%E7%94%A8%E8%AA%AA%E6%98%8E.md)**: 提供實車部署時，如何傳輸檔案、編譯 TensorRT `.engine` 引擎，以及滑桿參數的調參指南。
+* **[使用說明.md](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/%E4%BD%BF%E7%94%A8%E8%AA%AA%E6%98%8E.md)**: 提供實車部署時，如何傳輸檔案、編譯道路模型 `.engine` 與 YOLO `.trt` 引擎，以及滑桿參數的調參指南。
 * **[小組報告.md](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/%E5%B0%8F%E7%B5%84%E5%A0%B1%E5%91%8A.md)**: 已為您撰寫好的小組書面報告草稿，包含分工、實驗結果與遭遇相機硬體問題的防錯應對。
 * **[_reference_pre_project/](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/_reference_pre_project)**: 存放這學期 Project 4 ~ 6 的歷史程式碼與訓練權重，便於您回顧或重新訓練模型。
 
@@ -64,6 +64,6 @@ Final/
 2. **若要重新訓練路標辨識 YOLO 模型**：
    * 進入 `_reference_pre_project/Project6_sign_detect/` 下的 [scripts/](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/_reference_pre_project/Project6_sign_detect/scripts/) 目錄修改設定與執行訓練，重新匯出 `.cfg` 與 `.weights` 權重檔。
 3. **若要修改控制邏輯（例如調整 Cooldown 時間或速度比率）**：
-   * 修改主目錄下的 [Final.ipynb](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/Final.ipynb) 的推論與馬達速度控制迴圈（對應單元一、二、三的推論函數）。
+   * 修改主目錄下的 [Final_team_1.ipynb](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/Final_team_1.ipynb) 的推論與馬達速度控制迴圈（對應單元一、二、三的推論函數）。
 4. **實車部署**：
    * 請嚴格遵循 **[使用說明.md](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/%E4%BD%BF%E7%94%A8%E8%AA%AA%E6%98%8E.md)** 的步驟，將檔案傳輸至 JetBot 上進行 TensorRT 編譯與現場測試。
