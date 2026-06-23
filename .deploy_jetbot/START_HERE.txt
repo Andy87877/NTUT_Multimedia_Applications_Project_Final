@@ -1,18 +1,23 @@
 JETBOT DEPLOYMENT PACKAGE
 
-Target directory: ~/trt_yolov4-tiny-master/
+Target directory: ~/jetbot/notebooks/road_following_team_1/
 
-1. Copy the CONTENTS of this folder into the existing trt_yolov4-tiny-master directory.
-   Keep the existing utils/ directory and yolo conversion scripts on the JetBot.
-2. Open Final_team_1.ipynb from the trt_yolov4-tiny-master root directory.
-3. Confirm yolo/yolov4-tiny-416.trt exists. If it does not, build it with the
+1. Copy the CONTENTS of this folder into road_following_team_1.
+2. Keep the existing road_following_team_1/trt_yolv4-tiny-master directory.
+   It must contain utils/yolo.py, plugins/libyolo_layer.so and the YOLO conversion scripts.
+3. Open Final_team_1.ipynb from road_following_team_1.
+4. Confirm yolo/yolov4-tiny-416.trt exists. If it does not, build it with the
    YOLO conversion commands in deploy_structure.md.
-4. Run Cell 2 once. It builds the road-following TensorRT files:
+5. Run Cell 2 once. It builds the road-following TensorRT files:
    - road_following_model/best_steering_model_xy.engine
    - road_following_model/best_steering_model_xy_trt.pth
-5. Restart the Jupyter kernel after conversion to release GPU memory.
-6. Run Unit 3 cells C1 through C6 in order.
-7. Run C7 to stop the robot and release the camera.
+6. Restart the Jupyter kernel after conversion to release GPU memory.
+7. Run Unit 3 cells C1 through C6 in order.
+8. Run C7 to stop the robot and release the camera/models.
+
+When switching between Unit 1, Unit 2 and Unit 3, always run that unit's
+safe-stop cell first. If camera stop or CUDA cleanup reports an error,
+restart the Jupyter kernel before loading another unit.
 
 Before driving, start with Speed between 0.10 and 0.15.
 TensorRT files must be built on the target JetBot and cannot be prebuilt on Windows.
