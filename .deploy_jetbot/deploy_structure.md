@@ -23,7 +23,7 @@
 └── yolo/                                   # 🚥 YOLO 號誌偵測資料夾
     ├── yolov4-tiny-416.weights             # PC 端訓練好的 Darknet 原始權重
     ├── yolov4-tiny-416.cfg                 # 號誌偵測網路設定檔
-    ├── obj.names                           # 號誌類別名稱檔（0=blocked, 1=pedestrian, 2=rail, 3=stop）
+    ├── obj.names                           # 號誌類別名稱檔（0=stop, 1=rail, 2=pedestrian, 3=blocked）
     └── yolov4-tiny-416.trt                 # 👈 編譯出來的 TensorRT 引擎檔
 ```
 
