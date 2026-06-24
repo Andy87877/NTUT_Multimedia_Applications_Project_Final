@@ -6,15 +6,13 @@
 
 ## 📂 JetBot 端完整目錄結構
 
-請確保將檔案上傳至 JetBot 上的 `~/jetbot/notebooks/road_following_team_1/`，並維持以下結構：
+請確保將檔案上傳至 JetBot 上的 `~/trt_yolov4-tiny-master/` 根目錄，並維持以下結構：
 
 ```text
-~/jetbot/notebooks/road_following_team_1/
-├── Final_team_1.ipynb                      # 合併控制主程式（包含控制滑桿與即時遙測介面）
-├── trt_yolv4-tiny-master/                  # JetBot 上既有 YOLO TensorRT 工具庫
-│   ├── utils/yolo.py                       # YOLO 推論封裝模組
-│   ├── plugins/libyolo_layer.so            # YOLO TensorRT plugin
-│   └── yolo/                               # YOLO 轉換腳本目錄
+~/trt_yolov4-tiny-master/
+├── Final.ipynb                             # 合併控制主程式（包含控制滑桿與即時遙測介面）
+├── utils/
+│   └── yolo.py                             # YOLO 推論封裝模組
 ├── road_following_model/                   # 道路循跡模型資料夾
 │   ├── best_steering_model_xy.pth          # PC 端訓練好的原始權重
 │   ├── best_steering_model_xy.onnx         # 程式自動匯出的 ONNX 檔案
@@ -24,27 +22,27 @@
     ├── yolov4-tiny-416.weights             # PC 端訓練好的 Darknet 原始權重
     ├── yolov4-tiny-416.cfg                 # 號誌偵測網路設定檔
     ├── obj.names                           # 號誌類別名稱檔（0=stop, 1=rail, 2=pedestrian, 3=blocked）
-    └── yolov4-tiny-416.trt                 # 👈 編譯出來的 TensorRT 引擎檔
+    └── yolov4-tiny-416.engine              # 👈 編譯出來的 TensorRT 引擎檔
 ```
 
 ---
 
 ## 🛠️ YOLOv4-tiny 引擎編譯步驟
 
-若您在車端尚未產生 `yolov4-tiny-416.trt`，請開啟 JetBot 的終端機（Terminal）並依序執行以下指令：
+若您在車端尚未產生 `.engine` 檔案，請開啟 JetBot 的終端機（Terminal）並依序執行以下指令：
 
 ```bash
 # 1. 切換至 yolo 資料夾
-cd ~/jetbot/notebooks/road_following_team_1/trt_yolv4-tiny-master/yolo/
+cd ~/trt_yolov4-tiny-master/yolo/
 
 # 2. 將 Darknet 權重轉換為 ONNX 格式
 # -c 代表類別數量（本專案為 4 類），-m 代表模型名稱
 python3 yolo_to_onnx.py -c 4 -m yolov4-tiny-416
 
-# 3. 將 ONNX 轉換為 TensorRT .trt 檔案
+# 3. 將 ONNX 轉換為 TensorRT .engine 檔案
 python3 onnx_to_tensorrt.py -c 4 -m yolov4-tiny-416
 ```
 
 > [!NOTE]
 > - 編譯過程大約需要 **2 ~ 5 分鐘**，編譯期間系統負載較高，請耐心等候。
-> - 編譯完成後，請將 `yolov4-tiny-416.trt` 放到 `~/jetbot/notebooks/road_following_team_1/yolo/`，此時 `Final_team_1.ipynb` 才會載入該引擎。
+> - 編譯完成後，同目錄下會生成 `yolov4-tiny-416.engine`，此時 `Final.ipynb` 便可直接順利載入。
