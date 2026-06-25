@@ -38,7 +38,7 @@
 
 </details>
 
-<!-- <div align="center">
+<div align="center">
 
 ### 🎬 成果精華搶先看
 
@@ -46,20 +46,24 @@
   <tr>
     <td align="center" width="50%">
       <b>🏁 最終實車測試紀錄</b><br><br>
-      <video src="docs/Final_Record.mov" controls="controls" width="100%"></video>
-      <br>
-      <sub>壓線一次，22.28 秒；正式影片連結可於報告成果展示區補上。</sub>
+      <a href="https://youtube.com/shorts/EyfktqNMqYU?feature=share">
+        <img src="https://img.youtube.com/vi/EyfktqNMqYU/hqdefault.jpg" width="100%" alt="JetBot final record video" />
+      </a>
+      <br><br>
+      <a href="https://youtube.com/shorts/EyfktqNMqYU?feature=share"><b>觀看最終實車測試影片</b></a><br>
+      <sub>https://youtube.com/shorts/EyfktqNMqYU?feature=share</sub><br>
+      <sub>最佳時間：22.28 秒。</sub>
     </td>
     <td align="center" width="50%">
       <b>🗺️ 最終賽道路線與系統展示</b><br><br>
-      <img src="images/integration/final_cover_track_wide.png" width="100%" alt="JetBot final track overview" />
+      <img src="images/integration/final_cover_track.jpg" width="100%" alt="JetBot final track overview" />
       <br>
       <sub>最終版本以 .deploy_jetbot/Final_team_1.ipynb 為上車執行入口。</sub>
     </td>
   </tr>
 </table>
 
-</div> -->
+</div>
 
 ---
 
