@@ -1,69 +1,302 @@
-# 🏎️ JetBot 智能避障與多功能循跡期末專案 (Final Project)
+<div align="center">
 
-本專案為 NTUT 多媒體應用期末專案。目標是結合本學期所學，在 **JetBot (Jetson Nano)** 自走車平台上部署一個雙模型並行推論系統，實現**自主道路跟隨**與**即時交通路牌辨識與自動控制**。
+# 🏎️ JetBot AI 道路循跡與路牌辨識整合專案
 
----
+**多媒體應用 Final Project — Road Following + Traffic Sign Recognition**
 
-## 🎯 專案任務與評分標準 (70% 實車 DEMO + 30% 報告)
+<img src="https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python&logoColor=white" />
+<img src="https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" />
+<img src="https://img.shields.io/badge/NVIDIA-TensorRT-76B900?style=for-the-badge&logo=nvidia&logoColor=white" />
+<img src="https://img.shields.io/badge/Hardware-JetBot%20%2F%20Jetson%20Nano-76B900?style=for-the-badge&logo=nvidia&logoColor=white" />
+<img src="https://img.shields.io/badge/Model-ResNet--18%20%2B%20YOLOv4--tiny-4B8BBE?style=for-the-badge" />
 
-本專案的評分標準與規定詳見期末專案手冊：[Final_Project.pdf](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/Final_Project.pdf)
+<br /><br />
 
-### 1. 道路自動駕駛功能 (30%)
-* 讓 Jetbot 自動追蹤車道線並順暢行駛完賽道。
-* 輪胎壓線一次扣 1 分。
-* 輪胎完全超出車道一次扣 3 分。若完全脫離車道，需從脫離點重新開始。
+本專案將 **JetBot 自走車道路循跡**、**YOLOv4-tiny 路牌辨識** 與 **TensorRT 加速推論** 整合成可實際上車運行的最終版本。<br />
+主要目標是讓 JetBot 能沿賽道自主行駛，並根據路牌或障礙事件自動停車、減速或恢復巡路。
 
-### 2. 交通路牌辨識與防禦動作 (40%)
-根據相機辨識出的交通路牌執行對應動作：
-* 🛑 **停車再開 (Stop & Go)**：偵測到此號誌，原地停止 2 秒後繼續前進。(7.5%)
-* 🚂 **鐵路平交道 (Railway)**：偵測到此號誌，原地停止 5 秒後繼續前進。(7.5%)
-* 🚶 **當心行人 (Pedestrian)**：偵測到此號誌，自動減速為 0.7x 基礎速度行駛，通過後自動恢復。(7.5%)
-* 🚧 **道路封閉 (Blocked)**：偵測到此號誌，於號誌牌前安全停車，並永久結束程式運算。(7.5%)
-* 🛡️ **防假路標干擾機制**：自走車應忽略賽道旁遠處、背景或假的路標貼紙。若對假路標產生誤動作，每次扣 2 分。(10%)
+<br />
 
-### 3. 書面報告與實體 DEMO (30%)
-* 實體驗收演示（期末考）。
-* 繳交小組報告與個人報告。
+**最終實車紀錄：完成時間 22.28 秒**
+
+</div>
 
 ---
 
-## 📂 專案目錄與檔案結構
+<details open>
+<summary><b>🧑‍🎓 專案團隊 & 課程資訊</b></summary>
 
-為了方便您後續的修改與維護，專案目錄已整理如下：
+<br>
 
+- **指導教授**：陳彥霖 (Yen-Lin Chen), Ph.D.
+- **課程單位**：國立臺北科技大學 電資學士班 / Spring 2026
+- **專案主題**：JetBot 道路循跡與交通路牌辨識整合
+- **組員**：
+  - 113820033 電資二 謝奕宏
+  - 113820020 電資二 林政德
+  - 112820034 電資二 呂伊茹
+
+</details>
+
+<!-- <div align="center">
+
+### 🎬 成果精華搶先看
+
+<table width="90%">
+  <tr>
+    <td align="center" width="50%">
+      <b>🏁 最終實車測試紀錄</b><br><br>
+      <video src="docs/Final_Record.mov" controls="controls" width="100%"></video>
+      <br>
+      <sub>壓線一次，22.28 秒；正式影片連結可於報告成果展示區補上。</sub>
+    </td>
+    <td align="center" width="50%">
+      <b>🗺️ 最終賽道路線與系統展示</b><br><br>
+      <img src="images/integration/final_cover_track_wide.png" width="100%" alt="JetBot final track overview" />
+      <br>
+      <sub>最終版本以 .deploy_jetbot/Final_team_1.ipynb 為上車執行入口。</sub>
+    </td>
+  </tr>
+</table>
+
+</div> -->
+
+---
+
+## 📋 專案簡介
+
+本專案是 Project 5 道路循跡與 Project 6 路牌辨識的最終整合版本。系統會從 JetBot 相機取得影像，分別送入道路模型與路牌模型，再由控制邏輯決定馬達輸出。
+
+| 功能 | 說明 |
+|------|------|
+| 道路循跡 | 使用 ResNet-18 預測道路目標點 `(X, Y)`，再透過 PD 控制左右輪速度 |
+| 路牌辨識 | 使用 YOLOv4-tiny TensorRT 偵測 `stop`、`rail`、`pedestrian`、`blocked` |
+| 推論加速 | 道路模型與 YOLO 模型皆整理為 JetBot 可用的 TensorRT 推論版本 |
+| 最終整合 | 道路模型持續推論，YOLO 週期性推論，並用事件優先權控制車體狀態 |
+
+<div align="center">
+  <img src="images/integration/system_architecture.png" width="88%" alt="System architecture" />
+  <br>
+  <sub>系統架構：相機輸入、道路循跡、路牌辨識、事件判斷與馬達控制。</sub>
+</div>
+
+---
+
+## 🧩 Notebook 三個單元
+
+最終主程式位於：
+
+```text
+.deploy_jetbot/Final_team_1.ipynb
 ```
+
+Notebook 不是單一路徑直接跑到底，而是依照測試需求分成三個單元，方便在 JetBot 上逐步驗證。
+
+| 單元 | 名稱 | 重點 |
+|------|------|------|
+| 單元一 | 道路循跡 | 使用約 800 張實際巡路影像訓練道路模型，測試 JetBot 是否能穩定沿道路行駛 |
+| 單元二 | 路牌辨識 | 沿用先前 YOLOv4-tiny 訓練成果，本次整合階段未重新訓練 |
+| 單元三 | 最終整合 | 將道路循跡、YOLO 偵測、事件狀態機與馬達控制合併成最終上車流程 |
+
+<div align="center">
+  <table width="95%">
+    <tr>
+      <td align="center" width="33%">
+        <img src="images/integration/unit1_road_following_flow.png" width="100%" alt="Unit 1 road following flow" /><br>
+        <b>單元一：道路循跡</b>
+      </td>
+      <td align="center" width="33%">
+        <img src="images/integration/unit2_sign_detection_flow.png" width="100%" alt="Unit 2 sign detection flow" /><br>
+        <b>單元二：路牌辨識</b>
+      </td>
+      <td align="center" width="33%">
+        <img src="images/integration/unit3_final_integration_flow.png" width="100%" alt="Unit 3 final integration flow" /><br>
+        <b>單元三：最終整合</b>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 📊 最終成果數據
+
+| 項目 | 結果 |
+|------|------|
+| 最佳實車紀錄 | **22.28 秒** |
+| 道路循跡資料量 | **約 800 張實際巡路影像** |
+| 道路模型 | ResNet-18，輸入尺寸 224 x 224 |
+| 道路 TensorRT 一致性 | `max_diff = 0.000520` |
+| 道路測試平均誤差 | 12.702 px |
+| 路牌模型 | YOLOv4-tiny，輸入尺寸 416 x 416 |
+| 路牌模型來源 | 沿用 Project 6 訓練成果，本次未額外訓練 |
+| YOLO F1-score | 0.9330 |
+| YOLO 測試準確率 | 97.06% |
+| 最終 Speed | 0.15 |
+| 最終 P | 0.10 |
+| 最終 D | 0.02 |
+| 最終 Bias | 0.02 |
+
+<div align="center">
+  <table width="95%">
+    <tr>
+      <td align="center" width="50%">
+        <img src="images/integration/final_metrics_dashboard.png" width="100%" alt="Final metrics dashboard" /><br>
+        <b>最終成果指標</b>
+      </td>
+      <td align="center" width="50%">
+        <img src="images/integration/unit_verification_matrix.png" width="100%" alt="Unit verification matrix" /><br>
+        <b>三個單元驗證矩陣</b>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 📁 專案結構
+
+```text
 Final/
-├── Final_team_1.ipynb            # 🚀 主部署 Jupyter Notebook (包含分單元測試與最終合併版)
-├── 使用說明.md                   # 📝 車端部署、模型轉換與滑桿調參詳細說明書
-├── 小組報告.md                   # 📊 期末小組書面報告草稿 (符合大綱要求)
-├── Final_Project.pdf             # 📕 期末專案規範官方 PDF
-├── README.md                     # 🏠 專案導覽與快速入口 (本檔案)
-└── _reference_pre_project/       # 📂 先前專案與訓練程式碼參考庫
-    ├── Project4_object_detect/   # 🔍 Project 4: 基礎 YOLO 物件偵測
-    ├── Project5_road_detect/     # 🛣️ Project 5: ResNet-18 道路循跡訓練與蒐集
-    └── Project6_sign_detect/     # 🛑 Project 6: YOLOv4-tiny 號誌偵測訓練與權重
+├── .deploy_jetbot/                         # 實際部署到 JetBot 的最終執行包
+│   ├── Final_team_1.ipynb                  # 最終主控 Notebook
+│   ├── road_following_model/               # 道路循跡模型與 TensorRT 檔案
+│   ├── yolo/                               # YOLOv4-tiny 設定、權重與 TensorRT 檔
+│   ├── trt_yolv4-tiny-master/              # YOLO TensorRT 推論相關檔案
+│   ├── START_HERE.txt                      # JetBot 部署起始說明
+│   ├── 使用說明.md                         # JetBot 操作說明
+│   └── deploy_structure.md                 # 部署包結構說明
+├── road_following_model/                   # 本機道路模型、ONNX 與評估圖
+├── road_following_dataset_xy_2026-06-17_08-40-29/
+│                                           # 道路循跡資料集
+├── images/                                 # 報告與 README 圖片素材
+├── docs/                                   # 成果影片與補充文件
+├── Final_team_1.ipynb                      # 本機開發版 Notebook
+├── 小組報告.md                             # 小組報告 Markdown 原稿
+├── 小組報告.docx                           # 小組報告 Word 版本
+├── 小組報告.pdf                            # 小組報告 PDF 版本
+├── JetBot期末專案_小組報告_第一組.docx      # 最終提交 Word 版本
+└── JetBot期末專案_小組報告_第一組.pdf       # 最終提交 PDF 版本
 ```
-
-### 📍 核心檔案說明：
-* **[Final_team_1.ipynb](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/Final_team_1.ipynb)**: **控制核心**。內含三個單元：
-  * **單元一**：純道路跟隨（僅載入 ResNet 進行 PID 與轉向調校，不載入 YOLO）。
-  * **單元二**：純交通號誌動作測試（僅載入 YOLO 直線前進測試停/走動作）。
-  * **單元三**：最終雙模型合併版（雙模型並行推論，完整賽道自駕）。
-* **[使用說明.md](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/%E4%BD%BF%E7%94%A8%E8%AA%AA%E6%98%8E.md)**: 提供實車部署時，如何傳輸檔案、編譯道路模型 `.engine` 與 YOLO `.trt` 引擎，以及滑桿參數的調參指南。
-* **[小組報告.md](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/%E5%B0%8F%E7%B5%84%E5%A0%B1%E5%91%8A.md)**: 已為您撰寫好的小組書面報告草稿，包含分工、實驗結果與遭遇相機硬體問題的防錯應對。
-* **[_reference_pre_project/](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/_reference_pre_project)**: 存放這學期 Project 4 ~ 6 的歷史程式碼與訓練權重，便於您回顧或重新訓練模型。
 
 ---
 
-## 🚀 快速啟動與修改指引
+## 🚀 JetBot 上車流程
 
-當您需要修改或重新測試專案時：
+實際部署時，請以 `.deploy_jetbot` 內的內容為準，建議放在 JetBot 的專案資料夾：
 
-1. **若要調整道路循跡模型**：
-   * 進入 `_reference_pre_project/Project5_road_detect/` 下的 [train_model.ipynb](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/_reference_pre_project/Project5_road_detect/train_model.ipynb) 重新訓練或調整網路結構，生成新的 `best_steering_model_xy.pth`。
-2. **若要重新訓練路標辨識 YOLO 模型**：
-   * 進入 `_reference_pre_project/Project6_sign_detect/` 下的 [scripts/](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/_reference_pre_project/Project6_sign_detect/scripts/) 目錄修改設定與執行訓練，重新匯出 `.cfg` 與 `.weights` 權重檔。
-3. **若要修改控制邏輯（例如調整 Cooldown 時間或速度比率）**：
-   * 修改主目錄下的 [Final_team_1.ipynb](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/Final_team_1.ipynb) 的推論與馬達速度控制迴圈（對應單元一、二、三的推論函數）。
-4. **實車部署**：
-   * 請嚴格遵循 **[使用說明.md](file:///c:/Users/andy8/Desktop/NTUT_Media/Final/%E4%BD%BF%E7%94%A8%E8%AA%AA%E6%98%8E.md)** 的步驟，將檔案傳輸至 JetBot 上進行 TensorRT 編譯與現場測試。
+```text
+~/jetbot/notebooks/road_following_team_1/
+```
+
+進入 Jupyter Notebook 後開啟：
+
+```text
+Final_team_1.ipynb
+```
+
+建議測試順序：
+
+1. 確認相機、模型檔、TensorRT plugin 與路徑設定正常。
+2. 執行單元一，先確認道路循跡可穩定控制車體。
+3. 執行單元二，確認 YOLO 可輸出路牌類別與信心度。
+4. 執行單元三，測試道路循跡與路牌辨識的完整整合流程。
+5. 切換單元或結束測試前，務必執行停止馬達的 cell。
+
+<div align="center">
+  <img src="images/integration/unit3_runtime_timeline.png" width="88%" alt="Final runtime timeline" />
+  <br>
+  <sub>單元三執行時序：道路循跡持續執行，YOLO 依週期進行事件辨識。</sub>
+</div>
+
+---
+
+## 🧠 模型與控制策略
+
+### 道路循跡模型
+
+- **模型架構**：ResNet-18
+- **輸入尺寸**：224 x 224
+- **輸出目標**：道路目標點 `(X, Y)`
+- **資料來源**：約 800 張 JetBot 實際巡路影像
+- **控制方式**：以目標點換算轉向角，再透過 PD 控制馬達速度
+
+```python
+angle = atan2(x, y)
+pid = angle * P_gain + (angle - angle_last) * D_gain
+steering = pid + bias
+
+left_motor  = clamp(speed_gain + steering, 0, 1)
+right_motor = clamp(speed_gain - steering, 0, 1)
+```
+
+### 路牌辨識模型
+
+- **模型架構**：YOLOv4-tiny
+- **輸入尺寸**：416 x 416
+- **類別**：`stop`、`rail`、`pedestrian`、`blocked`
+- **訓練狀態**：沿用前一階段訓練成果，本次最終整合未重新訓練
+- **整合方式**：依信心度、偵測框大小、冷卻時間與狀態優先權決定是否觸發動作
+
+<div align="center">
+  <table width="95%">
+    <tr>
+      <td align="center" width="50%">
+        <img src="images/road_following/prediction_visual.png" width="100%" alt="Road following prediction visualization" /><br>
+        <b>道路模型預測視覺化</b>
+      </td>
+      <td align="center" width="50%">
+        <img src="images/sign_detection/actual_sign_examples_collage.jpg" width="100%" alt="Actual sign examples" /><br>
+        <b>實際路牌樣本</b>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 🔄 TensorRT 轉換
+
+JetBot 採用 Jetson Nano，若直接使用 PyTorch 模型推論，容易造成延遲與控制不穩。因此最終版本將道路模型與 YOLO 模型整理成 TensorRT 可執行版本。
+
+| 模型 | 最終部署檔案 |
+|------|------|
+| 道路循跡 | `.deploy_jetbot/road_following_model/best_steering_model_xy.engine` |
+| 道路循跡備用 | `.deploy_jetbot/road_following_model/best_steering_model_xy_trt.pth` |
+| 路牌辨識 | `.deploy_jetbot/yolo/yolov4-tiny-416.trt` |
+| YOLO 類別 | `.deploy_jetbot/yolo/obj.names` |
+
+<div align="center">
+  <img src="images/integration/road_tensorrt_conversion_flow.png" width="88%" alt="TensorRT conversion flow" />
+  <br>
+  <sub>道路模型 TensorRT 轉換與驗證流程。</sub>
+</div>
+
+---
+
+## 🎬 報告與成果展示
+
+| 文件 | 用途 |
+|------|------|
+| `JetBot期末專案_小組報告_第一組.pdf` | 最終提交 PDF |
+| `JetBot期末專案_小組報告_第一組.docx` | 最終提交 Word |
+| `小組報告.md` | 小組報告 Markdown 原稿 |
+| `.deploy_jetbot/使用說明.md` | JetBot 上車操作說明 |
+| `.deploy_jetbot/deploy_structure.md` | 部署包內容說明 |
+
+成果影片與補充資料連結可於報告中的成果展示區更新。
+
+---
+
+## ⚠️ 注意事項
+
+- 第一次執行馬達控制前，建議先將 JetBot 架高測試，避免車體暴衝。
+- 切換單元一、單元二、單元三之前，請先停止上一個控制迴圈。
+- TensorRT 與 YOLO plugin 必須在 JetBot 上正確載入，否則路牌辨識無法執行。
+- 本專案曾遇到 SD 卡損壞與鏡頭模組故障，因此實車測試前應先確認硬體狀態。
+
+---
+
+## 📚 最終定位
+
+這份專案的核心價值在於完成從資料蒐集、模型訓練、TensorRT 加速、Notebook 整合到 JetBot 實車驗證的完整流程。外部讀者可以從本 README 快速理解專案目的，並透過 `.deploy_jetbot/Final_team_1.ipynb` 追蹤最終實際上車版本。
