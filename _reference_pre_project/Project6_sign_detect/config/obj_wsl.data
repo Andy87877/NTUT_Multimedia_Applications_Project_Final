@@ -1,5 +1,0 @@
-classes = 4
-train   = /mnt/c/Users/andy8/Desktop/NTUT_Media/Project6/train_wsl.txt
-valid   = /mnt/c/Users/andy8/Desktop/NTUT_Media/Project6/train_wsl.txt
-names   = /mnt/c/Users/andy8/Desktop/NTUT_Media/Project6/obj.names
-backup  = /mnt/c/Users/andy8/Desktop/NTUT_Media/Project6/backup
